@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>我是真瓜子</title>
-    <!-- 使用網路上的小圖示 -->
     <link rel="icon" type="image/x-icon" href="https://png.pngtree.com/png-vector/20220723/ourmid/pngtree-link-vector-icon-png-image_6033236.png">
     <style>
         body {
@@ -53,6 +52,8 @@
             cursor: pointer;
             position: relative;
             overflow: hidden;
+            transform: translateX(-100%); /* 初始位置在畫面左側 */
+            transition: transform 0.8s ease;
         }
         .button-container:hover {
             border: 2px solid black;
@@ -81,7 +82,6 @@
         .button-container:hover::after {
             opacity: 1;
         }
-        /* 按鈕背景色自訂 */
         .button1 { background-color: #e63946; } /* YouTube 紅色 */
         .button2 { background-color: #000000; color: white; } /* TikTok 黑色 */
         .button3 { background-color: #6a0dad; } /* DC群組 紫色 */
@@ -89,16 +89,15 @@
         .button5 { background-color: #ffffff; color: black; } /* 推特(X) 白色 */
         .button6 { background-color: #6441A5; } /* Twitch 深紫色 */
         .button7 { background-color: #87CEEB; } /* 哔哩哔哩 天空藍 */
+        .button8 { background-color: #FFC0CB; color: white; } /* Odysee 粉紅色 */
     </style>
 </head>
 <body>
-    <!-- 頂部圖片 -->
     <img src="https://yt3.googleusercontent.com/JlssgjEbv2G36HYZf1L4W4gxZxsYwkn0tFJ_-y1IebReK3cP6SG40cMXn7SYY5YlIaxctPdq_A=w1060-fcrop64=1,00005a57ffffa5a8-k-c0xffffffff-no-nd-rj" alt="瓜子的代表圖示">
 
     <h1>我是真瓜子</h1>
     <p>👇👇👇記得要去我其他平台的帳號看看唷!👇👇👇</p>
 
-    <!-- 按鈕們 -->
     <a href="https://www.youtube.com/@guazii1106" target="_blank" class="button-container button1">
         <img src="https://upload.wikimedia.org/wikipedia/commons/0/09/YouTube_full-color_icon_%282017%29.svg" alt="YouTube 平台圖示">
         <span>YouTube</span>
@@ -127,10 +126,24 @@
         <img src="https://images-eds-ssl.xboxlive.com/image?url=4rt9.lXDC4H_93laV1_eHHFT949fUipzkiFOBH3fAiZZUCdYojwUyX2aTonS1aIwMrx6NUIsHfUHSLzjGJFxxuuj.ku6DU7DpevDlTx30eYBYoykHnuSyxOLPZnd8MvbvPVcxhuukJJghre0Zqzkv8UAjDW.JqhlCd84mngtIbU-&format=source" alt="哔哩哔哩 平台圖示">
         <span>哔哩哔哩</span>
     </a>
+    <a href="https://odysee.com/@guazii1106:d" target="_blank" class="button-container button8">
+        <img src="https://play-lh.googleusercontent.com/aNVGJ_rJnQOExlvsRCHcN2qhAK9e2Hdg5y-amvpzu0FRG0aUYDKaurcs9sz8w48LCxE8=s256-rw" alt="Odysee 平台圖示">
+        <span>Odysee</span>
+    </a>
 
-    <!-- 底部內文 -->
     <div class="footer">
         ~已經到底了唷~
     </div>
+
+    <script>
+        window.addEventListener('load', () => {
+            const buttons = document.querySelectorAll('.button-container');
+            buttons.forEach((button, index) => {
+                setTimeout(() => {
+                    button.style.transform = 'translateX(0)';
+                }, index * 100); // 每個按鈕延遲 100ms 動畫
+            });
+        });
+    </script>
 </body>
 </html>
