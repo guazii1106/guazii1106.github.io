@@ -1,1 +1,11 @@
-
+{
+  "name": "github-pages-blog",
+  "version": "1.0.0",
+  "description": "A simple blog on GitHub Pages",
+  "scripts": {
+    "generate": "node scripts/generate-articles.js"
+  },
+  "dependencies": {
+    "glob": "^8.0.3"
+  }
+}
