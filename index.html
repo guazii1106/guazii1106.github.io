@@ -1,1 +1,47 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的博客</title>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<body>
+    <h1>文章列表</h1>
+    <div id="articleList"></div>
+    <div id="articleContent"></div>
 
+    <script>
+        async function loadArticles() {
+            let response = await fetch('articles.json');
+            let articles = await response.json();
+
+            let listDiv = document.getElementById('articleList');
+            articles.forEach(article => {
+                let link = document.createElement('a');
+                link.href = '#';
+                link.textContent = article.title;
+                link.onclick = (e) => {
+                    e.preventDefault();
+                    loadArticleContent(article.filename);
+                };
+                listDiv.appendChild(link);
+                listDiv.appendChild(document.createElement('br'));
+            });
+        }
+
+        async function loadArticleContent(filename) {
+            try {
+                let response = await fetch(`post/${filename}`);
+                let mdContent = await response.text();
+                let htmlContent = marked.parse(mdContent);
+                document.getElementById('articleContent').innerHTML = htmlContent;
+            } catch (e) {
+                console.error('加載文章內容錯誤:', e);
+            }
+        }
+
+        loadArticles();
+    </script>
+</body>
+</html>
