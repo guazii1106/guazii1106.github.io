@@ -1,6 +1,15 @@
 <!DOCTYPE html>
 <html lang="zh">
-<head>
+<script>
+    async function loadArticles() {
+        const response = await fetch('/articles.json');
+        const articles = await response.json();
+        console.log('Articles:', articles); // 調試輸出
+        // 原有代碼...
+    }
+    loadArticles();
+</script>
+    <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>我的博客</title>
