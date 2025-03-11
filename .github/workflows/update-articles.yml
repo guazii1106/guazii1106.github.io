@@ -1,0 +1,34 @@
+name: Update Articles JSON
+
+on:
+  push:
+    paths:
+      - 'post/*.md' # 當 post 資料夾中的 Markdown 文件變更時觸發
+
+jobs:
+  generate-json:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Generate articles.json
+        run: node scripts/generate-articles.js
+
+      - name: Commit changes
+        run: |
+          git config --global user.name 'GitHub Action'
+          git config --global user.email 'action@github.com'
+          git add articles.json
+          git commit -m 'Update articles.json' || echo "無變更需要提交"
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
