@@ -5,41 +5,89 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>我的博客</title>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        #articleList a { display: block; margin: 10px 0; text-decoration: none; color: #007bff; }
+        #articleList a:hover { text-decoration: underline; }
+        #tags { margin: 20px 0; }
+        #tags span { margin-right: 10px; cursor: pointer; color: #555; }
+        #tags span:hover { color: #007bff; }
+        #articleContent { border-top: 1px solid #ddd; padding-top: 20px; }
+    </style>
 </head>
 <body>
-    <h1>文章列表</h1>
+    <h1>我的博客</h1>
+    <a href="/profile.html">關於我</a>
+    <h2>文章列表</h2>
+    <div id="tags"></div>
     <div id="articleList"></div>
     <div id="articleContent"></div>
 
     <script>
-        async function loadArticles() {
-            let response = await fetch('articles.json');
-            let articles = await response.json();
+        let allArticles = [];
 
-            let listDiv = document.getElementById('articleList');
-            articles.forEach(article => {
-                let link = document.createElement('a');
+        async function loadArticles(filterTag = null) {
+            const response = await fetch('/articles.json');
+            allArticles = await response.json();
+
+            const listDiv = document.getElementById('articleList');
+            listDiv.innerHTML = '';
+
+            const filteredArticles = filterTag
+                ? allArticles.filter(article => article.tags.includes(filterTag))
+                : allArticles;
+
+            filteredArticles.forEach(article => {
+                const link = document.createElement('a');
                 link.href = '#';
                 link.textContent = article.title;
                 link.onclick = (e) => {
                     e.preventDefault();
                     loadArticleContent(article.filename);
+                    window.history.pushState({}, '', `#${article.filename}`);
                 };
                 listDiv.appendChild(link);
                 listDiv.appendChild(document.createElement('br'));
             });
+
+            loadTags();
         }
 
         async function loadArticleContent(filename) {
             try {
-                let response = await fetch(`post/${filename}`);
-                let mdContent = await response.text();
-                let htmlContent = marked.parse(mdContent);
+                const response = await fetch(`/post/${filename}`);
+                const mdContent = await response.text();
+                const htmlContent = marked.parse(mdContent.split('---\n---')[1] || mdContent); // 移除前置元數據
                 document.getElementById('articleContent').innerHTML = htmlContent;
             } catch (e) {
                 console.error('加載文章內容錯誤:', e);
+                document.getElementById('articleContent').innerHTML = '<p>加載失敗</p>';
             }
         }
+
+        function loadTags() {
+            const tagsDiv = document.getElementById('tags');
+            tagsDiv.innerHTML = '<strong>標籤：</strong>';
+            const allTags = [...new Set(allArticles.flatMap(article => article.tags))];
+            allTags.forEach(tag => {
+                const tagSpan = document.createElement('span');
+                tagSpan.textContent = tag;
+                tagSpan.onclick = () => loadArticles(tag);
+                tagsDiv.appendChild(tagSpan);
+            });
+            const allSpan = document.createElement('span');
+            allSpan.textContent = '全部';
+            allSpan.onclick = () => loadArticles();
+            tagsDiv.appendChild(allSpan);
+        }
+
+        window.addEventListener('popstate', () => {
+            const hash = window.location.hash.substring(1);
+            if (hash) {
+                const article = allArticles.find(a => a.filename === hash);
+                if (article) loadArticleContent(article.filename);
+            }
+        });
 
         loadArticles();
     </script>
